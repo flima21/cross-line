@@ -1,2 +1,9 @@
 *.env
 *.avi
+*.mov
+*.mp4
+*.mpg
+*.mpeg
+*.wmv
+*.flv
+*.swf
