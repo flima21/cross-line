@@ -1,6 +1,9 @@
 import cv2 
 import numpy as np
-import Person
+from .Person import Person
+
+from .Firebase import Firebase
+import time
 
 class OpenCv:
     
@@ -14,9 +17,13 @@ class OpenCv:
         # size area to capture movements inside out or in
         self.rect_xa, self.rect_ya, self.rect_xb, self.rect_yb = 100,100, 500, 500
         self.thread_initialized = False 
-
+        
+        self.firebase: Firebase = Firebase()
+        
         if isinstance(type_object,Person):
             self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+        
+        self.firebase.connect()
           
     def open_window_thread(self):
         try:
@@ -41,6 +48,9 @@ class OpenCv:
             if self.cap.isOpened():
                 self.out = cv2.VideoWriter(f'{path_file}{file_name}.avi',cv2.VideoWriter_fourcc(*'MJPG'),15.,(640,480))
                 
+                # limite do perímetro 
+                rect_x, rect_y, rect_w, rect_h = 100,100, 500, 500    
+                
                 # while web cam is opening
                 while True:
                     self.ret,self.math_like = self.cap.read()
@@ -52,7 +62,9 @@ class OpenCv:
                     print(self.ret)
                     # size to capture with faster way
                     self.math_like = cv2.resize(self.math_like,(640,480))
-
+                    
+                    cv2.rectangle(self.math_like, (rect_x, rect_y), (rect_x + rect_w, rect_y + rect_h), (255, 0, 0), 2)
+                    
                     # verify the scale 
                     gray = cv2.cvtColor(self.math_like,cv2.COLOR_RGB2HLS)
 
@@ -63,6 +75,14 @@ class OpenCv:
                         # display the detected boxes in the colour picture
                         cv2.rectangle(self.math_like, (xA, yA), (xB, yB),(0, 255, 0), 2)
 
+                        person_inner_x = xA + xB // 2
+                        person_inner_y = yA + yB // 2
+
+                        if rect_x < person_inner_x < rect_x + rect_w and rect_y < person_inner_y < rect_y + rect_h:
+                            # cv2.putText(self.math_like, 'Pessoa detectada dentro da area!', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                            self.firebase.post({"image": "","location":"pegar meu endereço", "message":"pessoa detectada na área"})
+                            time.sleep(10)
+                            
                     cv2.imshow('frame',self.math_like)
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):
