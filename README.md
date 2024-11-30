@@ -1,5 +1,4 @@
-# PROJETO EM DESENVOLVIMENTO
-
+# USINAS DE PROJETOS EXPERIMENTAIS V
 ## Estrutura 
 ```bash
 ├── src/        # Código-fonte principal da aplicação
@@ -25,3 +24,10 @@ cd cross-line
 ```bash
 pip3 install -r requirements.txt
 ```
+4. Execute o projeto 
+```
+python3 main.py
+```
+* Verifique se o seu local de execução apresenta o python instalado
+
+5. Para parar o projeto basta ciclar na tela Q
