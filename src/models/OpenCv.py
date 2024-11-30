@@ -1,9 +1,11 @@
+import base64
 import cv2 
 import numpy as np
 from .Person import Person
 
 from .Firebase import Firebase
 import time
+from datetime import datetime
 
 class OpenCv:
     
@@ -78,16 +80,16 @@ class OpenCv:
                         person_inner_x = xA + xB // 2
                         person_inner_y = yA + yB // 2
 
-                        if rect_x < person_inner_x < rect_x + rect_w and rect_y < person_inner_y < rect_y + rect_h:
-                            # cv2.putText(self.math_like, 'Pessoa detectada dentro da area!', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-                            self.firebase.post({"image": "","location":"pegar meu endereço", "message":"pessoa detectada na área"})
-                            time.sleep(10)
-                            
+                        # if rect_x < person_inner_x < rect_x + rect_w and rect_y < person_inner_y < rect_y + rect_h:
+                            # break 
+                                                    
                     cv2.imshow('frame',self.math_like)
 
+                    # time.sleep(10)
+                    
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
-                    
+
             self.dispose_capture()
         except Exception as e:
             print('aqui to com erro')
@@ -114,13 +116,24 @@ class OpenCv:
             
             # create the file in ouput
             self.out.write(self.math_like.astype('uint8'))
-
+            
+            print('*****************EXPORTADO*****************')
         except Exception as e:
             print(e)
             print('aconteceu alguma coisa aqui *****')
 
     def dispose_capture(self):
         try:
+            today = datetime.now().strftime('%Y-%m-%d %H:%i:%s')
+            
+            image_read = f'IMAGEM_GERADA_CROSSLINES_{today}.jpg'
+            
+            cv2.imwrite(image_read, self.math_like, [cv2.IMWRITE_JPEG_QUALITY, 90])
+            
+            with open(image_read, "rb") as imagem:
+                imagem_base64 = base64.b64encode(imagem.read()).decode('utf-8')
+                self.firebase.post({"image": imagem_base64,"location":"pegar meu endereço", "message":"pessoa detectada na área"})
+            
             # close the webcam
             if self.cap:
                 if self.cap.isOpened():
@@ -130,7 +143,7 @@ class OpenCv:
             if self.out:
                 if self.out.isOpened():
                     self.out.release()
-
+            
             cv2.destroyAllWindows()
             cv2.waitKey(1)
         except Exception as e:
