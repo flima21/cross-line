@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "692917351353",
+    "project_id": "test-upx5",
+    "storage_bucket": "test-upx5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692917351353:android:9f876942fe1bb42bdcfc68",
+        "android_client_info": {
+          "package_name": "com.flima.testupx5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYUl9idA-91OUDj1-bl4lwhWowok-FGsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
